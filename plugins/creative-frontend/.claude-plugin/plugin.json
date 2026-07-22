@@ -1,0 +1,28 @@
+{
+  "name": "creative-frontend",
+  "description": "Five specialist agents for GPU-heavy creative frontends: GPU fluid simulation, GLSL print-media rendering, WebGL performance budgeting, motion plus accessibility, and i18n/copy stewardship. Each ships a replaceable PROJECT GROUND TRUTH block.",
+  "version": "1.0.0",
+  "author": {
+    "name": "manu-brighter",
+    "url": "https://github.com/manu-brighter"
+  },
+  "repository": "https://github.com/manu-brighter/claude-code-kit",
+  "license": "MIT",
+  "keywords": [
+    "webgl",
+    "webgl2",
+    "glsl",
+    "shaders",
+    "fluid-simulation",
+    "navier-stokes",
+    "halftone",
+    "risograph",
+    "performance",
+    "core-web-vitals",
+    "accessibility",
+    "wcag",
+    "gsap",
+    "scrolltrigger",
+    "i18n"
+  ]
+}

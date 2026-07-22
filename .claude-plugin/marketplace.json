@@ -1,0 +1,53 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "claude-code-kit",
+  "owner": {
+    "name": "manu-brighter",
+    "url": "https://github.com/manu-brighter"
+  },
+  "metadata": {
+    "description": "Skills and agents for Claude Code: autonomous codebase overhaul, docs/i18n sync, publishing prep, and a set of creative-frontend specialist agents.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "dev-workflow",
+      "description": "Five general-purpose skills: full-project-rework (autonomous multi-agent codebase overhaul), project-refresh (docs, deployment info and i18n sync), generalize (strip personal context before publishing), list-skills (compact skill inventory), erklaerbaer (bilingual plain-language explainer).",
+      "version": "1.0.0",
+      "source": "./plugins/dev-workflow",
+      "author": {
+        "name": "manu-brighter",
+        "url": "https://github.com/manu-brighter"
+      },
+      "keywords": [
+        "refactor",
+        "code-quality",
+        "documentation",
+        "i18n",
+        "publishing",
+        "multi-agent"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "creative-frontend",
+      "description": "Five specialist agents for GPU-heavy creative frontends: GPU fluid simulation, GLSL print-media rendering, WebGL performance budgeting, motion plus accessibility, and i18n/copy stewardship. Each ships a replaceable PROJECT GROUND TRUTH block.",
+      "version": "1.0.0",
+      "source": "./plugins/creative-frontend",
+      "author": {
+        "name": "manu-brighter",
+        "url": "https://github.com/manu-brighter"
+      },
+      "keywords": [
+        "webgl",
+        "glsl",
+        "shaders",
+        "fluid-simulation",
+        "performance",
+        "accessibility",
+        "gsap"
+      ],
+      "category": "development"
+    }
+  ]
+}
