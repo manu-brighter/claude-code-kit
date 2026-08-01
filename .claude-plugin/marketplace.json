@@ -6,8 +6,8 @@
     "url": "https://github.com/manu-brighter"
   },
   "metadata": {
-    "description": "Skills and agents for Claude Code: autonomous codebase overhaul, docs/i18n sync, publishing prep, and a set of creative-frontend specialist agents.",
-    "version": "1.0.0"
+    "description": "Skills and agents for Claude Code: autonomous codebase overhaul, docs/i18n sync, publishing prep, a set of creative-frontend specialist agents, and an adversarial security auditor for AI-generated codebases.",
+    "version": "1.1.0"
   },
   "plugins": [
     {
@@ -46,6 +46,28 @@
         "performance",
         "accessibility",
         "gsap"
+      ],
+      "category": "development"
+    },
+    {
+      "name": "security-audit",
+      "description": "One adversarial security, safety and production-readiness reviewer specialized in AI-generated codebases: RLS and client-to-database exposure, secrets in bundles, missing server-side authorization, slopsquatted dependencies, the lethal trifecta, and destructive-action guardrails. Ships an optional hook that enforces its read-only guarantee.",
+      "version": "1.0.0",
+      "source": "./plugins/security-audit",
+      "author": {
+        "name": "manu-brighter",
+        "url": "https://github.com/manu-brighter"
+      },
+      "keywords": [
+        "security",
+        "audit",
+        "appsec",
+        "owasp",
+        "vibe-coding",
+        "supabase",
+        "supply-chain",
+        "prompt-injection",
+        "llm-security"
       ],
       "category": "development"
     }

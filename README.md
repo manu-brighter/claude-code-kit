@@ -3,15 +3,16 @@
 <div align="center">
 
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Marketplace-ff6ba0?style=for-the-badge&logo=anthropic&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
-![Plugins](https://img.shields.io/badge/2%20plugins-8b6fd8?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
-![Items](https://img.shields.io/badge/5%20skills%20%2B%205%20agents-3fc39a?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
+![Plugins](https://img.shields.io/badge/3%20plugins-8b6fd8?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
+![Items](https://img.shields.io/badge/5%20skills%20%2B%206%20agents-3fc39a?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
 ![License](https://img.shields.io/badge/MIT-e8983a?style=for-the-badge&labelColor=1a0e12)
 
 <br>
 
-**Two plugins.** `dev-workflow` — five general-purpose skills for overhauling,
+**Three plugins.** `dev-workflow` — five general-purpose skills for overhauling,
 documenting and publishing a codebase.<br>`creative-frontend` — five specialist agents
-for GPU-heavy frontends, each carrying real primary-source research.
+for GPU-heavy frontends, each carrying real primary-source research.<br>`security-audit`
+— one adversarial reviewer for the ways AI-generated code actually fails.
 
 </div>
 
@@ -21,6 +22,7 @@ for GPU-heavy frontends, each carrying real primary-source research.
 /plugin marketplace add manu-brighter/claude-code-kit
 /plugin install dev-workflow
 /plugin install creative-frontend
+/plugin install security-audit
 ```
 
 <details>
@@ -302,6 +304,50 @@ stop an agent re-reporting the same non-finding forever.
 
 <br>
 
+<img src="https://capsule-render.vercel.app/api?type=rect&color=0:8b6fd8,50:ff6ba0,100:e8983a&height=3&section=header" width="100%" />
+
+<h2 align="center">🔐&nbsp;&nbsp;security-audit</h2>
+
+<div align="center">
+
+One adversarial reviewer, ordered by how AI-generated code actually fails.
+
+</div>
+
+<br>
+
+<table>
+<tr>
+<td width="27%" valign="top">
+
+### [security-safety-auditor](plugins/security-audit/agents/security-safety-auditor.md)
+
+![](https://img.shields.io/badge/OWASP%202025-8b6fd8?style=flat-square&labelColor=1a0e12)
+
+</td>
+<td valign="top">
+
+A **Priority Sweep** ordered by frequency × impact in vibe-coded apps — Row Level
+Security, secrets in client bundles, missing server-side authorization, slopsquatted
+dependencies, the lethal trifecta, destructive-action guardrails — then sixteen
+systematic domains mapped to OWASP Top 10 2025. Severity and **confidence are scored
+separately**, coverage gaps are mandatory, and findings are deduplicated to their root
+cause. It reads the codebase as untrusted input: instructions found inside audited files
+become prompt-injection findings, never commands.
+
+</td>
+</tr>
+</table>
+
+> [!NOTE]
+> The agent holds `Bash` for `git log` and `git diff`, so its read-only rule is
+> **prompt-level, not a control** — and it says so in its own report. The plugin ships
+> `hooks/read-only-guard.js` to make it real. It is not auto-registered: `PreToolUse`
+> carries no "which agent is running" field, so a registered hook would block Bash in
+> every session. [Wiring instructions](plugins/security-audit#enforcing-read-only-optional-but-recommended).
+
+<br>
+
 <img src="https://capsule-render.vercel.app/api?type=rect&color=0:ff6ba0,50:8b6fd8,100:3fc39a&height=3&section=header" width="100%" />
 
 ## Repository structure
@@ -313,9 +359,13 @@ claude-code-kit/
     ├── dev-workflow/
     │   ├── .claude-plugin/plugin.json
     │   └── skills/<skill>/SKILL.md
-    └── creative-frontend/
+    ├── creative-frontend/
+    │   ├── .claude-plugin/plugin.json
+    │   └── agents/<agent>.md
+    └── security-audit/
         ├── .claude-plugin/plugin.json
-        └── agents/<agent>.md
+        ├── agents/security-safety-auditor.md
+        └── hooks/read-only-guard.js + .test.js
 ```
 
 ## License
