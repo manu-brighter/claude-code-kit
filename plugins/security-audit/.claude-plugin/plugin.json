@@ -1,0 +1,32 @@
+{
+  "name": "security-audit",
+  "description": "An adversarial security, safety and production-readiness reviewer specialized in AI-generated codebases: RLS and client-to-database exposure, secrets in bundles, missing server-side authorization, slopsquatted dependencies, the lethal trifecta, and destructive-action guardrails. Ships an optional hook that enforces its read-only guarantee instead of asking for it.",
+  "version": "1.0.0",
+  "author": {
+    "name": "manu-brighter",
+    "url": "https://github.com/manu-brighter"
+  },
+  "repository": "https://github.com/manu-brighter/claude-code-kit",
+  "license": "MIT",
+  "keywords": [
+    "security",
+    "security-review",
+    "audit",
+    "appsec",
+    "owasp",
+    "vibe-coding",
+    "supabase",
+    "row-level-security",
+    "rls",
+    "secrets",
+    "idor",
+    "bola",
+    "supply-chain",
+    "slopsquatting",
+    "prompt-injection",
+    "lethal-trifecta",
+    "llm-security",
+    "mcp",
+    "production-readiness"
+  ]
+}
