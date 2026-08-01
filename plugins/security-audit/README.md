@@ -55,10 +55,25 @@ critique the agent itself levels at change freezes that live only in a prompt. I
 instructed to disclose this in its own Coverage Gaps section when it was not run under an
 enforced guarantee.
 
-`hooks/read-only-guard.js` turns the rule into an actual control: it enforces the
-allowlist (`git log/diff/show/ls-files/status/branch/remote`, `npm ls`, `pip list`,
-`cargo tree`, `jq`), judges each segment of a chained command separately, rejects command
-substitution, and fails closed on a payload it cannot parse.
+`hooks/read-only-guard.js` turns the rule into an actual control. It is built as an
+**allowlist, not a denylist**: a command segment is denied unless it consists of an
+approved binary (`git log/diff/show/ls-files/status`, `npm ls`, `pip list`, `cargo tree`,
+`jq`), an approved subcommand, and arguments containing no shell metacharacter and no
+output-redirecting or code-executing flag. It splits on every separator — including a
+single `&` — judges each segment independently, and denies anything malformed,
+unfamiliar, or merely ambiguous.
+
+It never emits an *allow* decision, only *deny* or no decision at all. An explicit allow
+would suppress your own permission prompt, so a guard wired with a broad matcher would
+auto-approve the very writes it exists to prevent.
+
+`hooks/read-only-guard.test.js` pins the behaviour, including every bypass found in review
+(`git log > ~/.bashrc`, `git diff --output=…`, `git log & touch …`, `git -c core.pager=sh log`,
+`git branch -D main`, a `null` payload). No dependencies:
+
+```bash
+node --test plugins/security-audit/hooks/read-only-guard.test.js
+```
 
 **It is not auto-registered, on purpose.** Claude Code's `PreToolUse` payload carries no
 reliable "which agent is running" field, so a registered hook would deny Bash in *every*
@@ -75,13 +90,26 @@ typically when auditing code you did not write:
         "hooks": [
           {
             "type": "command",
-            "command": "node \"${CLAUDE_PLUGIN_ROOT}/hooks/read-only-guard.js\""
+            "command": "node \"/absolute/path/to/claude-code-kit/plugins/security-audit/hooks/read-only-guard.js\""
           }
         ]
       }
     ]
   }
 }
+```
+
+> **Use an absolute path, and keep the matcher at `Bash`.** `${CLAUDE_PLUGIN_ROOT}` is
+> populated for hooks a *plugin* provides; a hook you hand-write into your own project
+> settings has no plugin context, so it would expand to nothing, `node` would exit
+> non-zero, and a non-blocking hook error lets the command through — failing open, which
+> is the one outcome this file exists to prevent.
+
+Verify it is actually live before you trust it — this should print a `deny` decision:
+
+```bash
+echo '{"tool_name":"Bash","tool_input":{"command":"git log > /tmp/x"}}' \
+  | node /absolute/path/to/hooks/read-only-guard.js
 ```
 
 Remove it when you are done auditing — it will block your own Bash calls too.

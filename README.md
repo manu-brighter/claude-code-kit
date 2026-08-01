@@ -365,7 +365,7 @@ claude-code-kit/
     └── security-audit/
         ├── .claude-plugin/plugin.json
         ├── agents/security-safety-auditor.md
-        └── hooks/read-only-guard.js
+        └── hooks/read-only-guard.js + .test.js
 ```
 
 ## License
