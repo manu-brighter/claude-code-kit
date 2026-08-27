@@ -1,7 +1,7 @@
 {
   "name": "dev-workflow",
   "description": "Five general-purpose skills: full-project-rework (autonomous multi-agent codebase overhaul), project-refresh (docs, deployment info and i18n sync), generalize (strip personal context before publishing), list-skills (compact skill inventory), erklaerbaer (bilingual plain-language explainer).",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "author": {
     "name": "manu-brighter",
     "url": "https://github.com/manu-brighter"
