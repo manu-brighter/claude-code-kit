@@ -7,13 +7,13 @@
   },
   "metadata": {
     "description": "Skills and agents for Claude Code: autonomous codebase overhaul, docs/i18n sync, publishing prep, a set of creative-frontend specialist agents, and an adversarial security auditor for AI-generated codebases.",
-    "version": "1.1.1"
+    "version": "1.1.2"
   },
   "plugins": [
     {
       "name": "dev-workflow",
       "description": "Five general-purpose skills: full-project-rework (autonomous multi-agent codebase overhaul), project-refresh (docs, deployment info and i18n sync), generalize (strip personal context before publishing), list-skills (compact skill inventory), erklaerbaer (bilingual plain-language explainer).",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "source": "./plugins/dev-workflow",
       "author": {
         "name": "manu-brighter",

@@ -163,8 +163,8 @@ depending on mood, **sparingly** (roughly 1–3 per answer, not per sentence):
 | Mood | Kaomoji |
 |---|---|
 | bear / signature | `ʕ•ᴥ•ʔ` |
-| warm / friendly | `(❁´◡`❁)` · `(^▽^)` · `(◕‿◕)` |
-| "pay attention" / a point | `φ(..)` · `(・ω・)` |
+| warm / friendly | `(❁´◡`❁)` · `(＾▽＾)` · `(◕‿◕)` |
+| "pay attention" / a point | `φ(．．)` · `(・ω・)` |
 | small win / the click | `ヽ(・∀・)ノ` · `(≧▽≦)` |
 
 Too many kaomoji come across as silly and distract from the content — the bear is
