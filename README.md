@@ -4,13 +4,13 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude%20Code-Marketplace-ff6ba0?style=for-the-badge&logo=anthropic&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
 ![Plugins](https://img.shields.io/badge/3%20plugins-8b6fd8?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
-![Items](https://img.shields.io/badge/5%20skills%20%2B%206%20agents-3fc39a?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
+![Items](https://img.shields.io/badge/7%20skills%20%2B%206%20agents-3fc39a?style=for-the-badge&logoColor=f0e8dc&labelColor=1a0e12)&nbsp;
 ![License](https://img.shields.io/badge/MIT-e8983a?style=for-the-badge&labelColor=1a0e12)
 
 <br>
 
-**Three plugins.** `dev-workflow` — five general-purpose skills for overhauling,
-documenting and publishing a codebase.<br>`creative-frontend` — five specialist agents
+**Three plugins.** `dev-workflow` — seven general-purpose skills for overhauling,
+shipping, reviewing, documenting and publishing a codebase.<br>`creative-frontend` — five specialist agents
 for GPU-heavy frontends, each carrying real primary-source research.<br>`security-audit`
 — one adversarial reviewer for the ways AI-generated code actually fails.
 
@@ -93,6 +93,42 @@ Audits everything documentation-adjacent — README, project brief, CHANGELOG, `
 deployment config, locale catalogs — against the actual state of the code, and fixes
 what has drifted. Also translates new or changed UI strings into every existing locale
 file. Lightweight: no branch, no pipeline.
+
+</td>
+</tr>
+<tr>
+<td width="27%" valign="top">
+
+### [ship-changes](plugins/dev-workflow/skills/ship-changes)
+
+![](https://img.shields.io/badge/git%20%2B%20ci-e8983a?style=flat-square&labelColor=1a0e12)
+
+</td>
+<td valign="top">
+
+Wraps up finished work. **Full** mode commits, pushes, opens the MR/PR, gets a subagent
+review, applies the findings you approve and drives the pipeline to green. **Light**
+mode only reviews and applies fixes locally, no git writes. Follows the project's own
+commit and branch conventions, never pushes to a protected branch, auto-detects GitLab
+or GitHub.
+
+</td>
+</tr>
+<tr>
+<td width="27%" valign="top">
+
+### [review-ghostwriter](plugins/dev-workflow/skills/review-ghostwriter)
+
+![](https://img.shields.io/badge/code%20review-8b6fd8?style=flat-square&labelColor=1a0e12)
+
+</td>
+<td valign="top">
+
+Reviews someone else's MR/PR and writes the comments **in your voice** into a Markdown
+file, ready to copy. Never posts anything. A subagent reviews, the main agent verifies
+every finding in the code and argues until both agree. Each finding comes with a jump
+link to the exact diff line and a suggestion block where it helps. Calibrate it once on
+your own past review comments.
 
 </td>
 </tr>
