@@ -23,11 +23,10 @@ the user the login command to run themselves; don't try to fix auth on your own.
 
 **Does an MR already exist for this branch?**
 ```bash
-glab mr list --source-branch "$(git branch --show-current)"
-# or inspect the branch's MR directly:
-glab mr view "$(git branch --show-current)"
+glab mr list --source-branch "$(git branch --show-current)"   # lists open MRs by default
 ```
-If one is listed, reuse it (grab its IID / URL); do not create another.
+If an **open** one is listed, reuse it (grab its IID / URL); do not create another. A merged or
+closed MR for the same branch name does not count.
 
 **Create an MR** (after the branch is pushed). Write the body to a file to preserve formatting:
 ```bash
@@ -35,27 +34,30 @@ glab mr create \
   --source-branch "$(git branch --show-current)" \
   --target-branch "<target>" \
   --title "<title>" \
-  --description "$(cat /path/to/mr-body.md)" \
-  --remove-source-branch
+  --description-file /path/to/mr-body.md \
+  --yes
 ```
 - Do **not** use `--fill` if you have a real description; `--fill` just uses the commit message.
 - Add `--draft` if the change isn't ready for review attention yet (ask if unsure).
+- Leave `--remove-source-branch` out so the project's default applies.
 - Never auto-assign reviewers unless the user asks.
 
 **Pipeline status for the branch/MR:**
 ```bash
-glab ci status --branch "$(git branch --show-current)"   # current pipeline status
-glab ci list --branch "$(git branch --show-current)"     # recent pipelines
+glab ci status --branch "$(git branch --show-current)"            # current pipeline status
+glab ci status --branch "$(git branch --show-current)" --wait     # block until it finishes
+glab ci list --ref "$(git branch --show-current)" -F json         # recent pipelines
 ```
 
 **Failing job logs:**
 ```bash
-glab ci view --branch "$(git branch --show-current)"     # jobs + statuses
-glab ci trace <job-id-or-name>                            # full log of a job
+glab ci get --branch "$(git branch --show-current)" --status failed --with-job-details   # failed jobs
+glab ci trace <job-id-or-name>                                                         # full log of a job
 ```
+Don't use `glab ci view`: it is an interactive TUI and hangs in a non-interactive shell.
 
-Poll `glab ci status` until the pipeline reaches a terminal state (`success` / `failed` /
-`canceled`). Some `glab` versions can watch live; if it returns immediately, poll on an interval.
+If `--wait` is not available in your `glab` version, poll `glab ci status` on an interval until the
+pipeline reaches a terminal state (`success` / `failed` / `canceled`).
 
 ---
 
@@ -63,10 +65,9 @@ Poll `glab ci status` until the pipeline reaches a terminal state (`success` / `
 
 **Does a PR already exist for this branch?**
 ```bash
-gh pr view --json number,url,state 2>/dev/null || echo "no PR"
-gh pr list --head "$(git branch --show-current)" --json number,url,state
+gh pr list --head "$(git branch --show-current)" --state open --json number,url,state
 ```
-If one exists, reuse it.
+If an **open** one exists, reuse it. A merged or closed PR for the same branch name does not count.
 
 **Create a PR** (after the branch is pushed):
 ```bash

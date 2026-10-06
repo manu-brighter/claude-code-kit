@@ -10,7 +10,8 @@ description: >-
   review → apply agreed findings → commit → push → drive the pipeline to green) or LIGHT
   (subagent review → apply agreed findings locally, no git writes at all). Auto-detects GitLab
   (glab) vs GitHub (gh). Use this even when the user does not say the word "skill": any request to
-  finalize, ship, or review-and-fix completed work should route here.
+  finalize, ship, or review-and-fix completed work should route here. NOT for reviewing someone
+  else's MR/PR (review-ghostwriter).
 ---
 
 # Ship Changes
@@ -97,12 +98,14 @@ descriptive (e.g. `feat/user-export`). Some projects add a version segment, e.g.
 
 1. **Determine the review base.** Find the branch this work diverged from
    (`git merge-base HEAD origin/develop` / `origin/master` / `origin/main`, try in that order, or
-   ask which base is correct). The review covers everything from that base to the current
-   **working tree**, including uncommitted changes.
-2. **Review via subagent.** See [Running the review](#running-the-review). Because Light-mode
-   changes may be uncommitted, tell the reviewer to inspect the full working delta, e.g.
-   `git diff <base-branch>` (working tree vs base) in addition to any committed range. Give it a
-   one-line description of what the change does.
+   ask which base is correct). The review covers everything from that merge-base to the current
+   **working tree**: committed, staged, unstaged and new untracked files.
+2. **Review via subagent.** See [Running the review](#running-the-review). Hand the reviewer the
+   full working delta: `git diff $(git merge-base HEAD origin/<base>)` (committed + staged +
+   unstaged changes against the merge-base, so upstream commits don't show up as noise) plus the
+   list from `git ls-files --others --exclude-standard` (new files that are not tracked yet; the
+   reviewer reads them directly). Don't use `git add -N` for this, it writes to the index. Give
+   it a one-line description of what the change does.
 3. **Present findings and get approval** (see [Applying findings](#applying-findings-both-modes)).
 4. **Apply the agreed findings locally.** Stop there. Report what changed and remind the user the
    changes are uncommitted; if they want to ship, they can re-run this skill in Full mode.
@@ -122,10 +125,13 @@ descriptive (e.g. `feat/user-export`). Some projects add a version segment, e.g.
 
 ### Commit
 
-4. Stage the change and commit with a message that follows the project's
-   [conventions](#conventions). Show the message you're about to use, then commit. **No AI
-   attribution.** If the working tree is already clean (the work is committed but not pushed),
-   skip the commit and go straight to Push.
+4. Check `git status`, then stage the change **by explicit path**, never `git add -A` / `git add .`
+   (stray scratch files or a non-ignored `.env` must not end up in the MR/PR). If untracked or
+   unrelated modified files make the scope ambiguous, list them and ask which belong to this
+   change. That question is about scope, not a push confirmation. Commit with a message that
+   follows the project's [conventions](#conventions); show the message and the staged file list,
+   then commit. **No AI attribution.** If the working tree is already clean (the work is committed
+   but not pushed), skip the commit and go straight to Push.
 
 ### Push
 
@@ -147,7 +153,8 @@ descriptive (e.g. `feat/user-export`). Some projects add a version segment, e.g.
 
 ### Review + apply
 
-8. **Review via subagent** over the MR's range (base = target branch, head = pushed HEAD). See
+8. **Review via subagent** over the MR's range: `git diff origin/<target>...HEAD` (fetch first, so
+   `origin/<target>` is current; three dots = from the merge-base). See
    [Running the review](#running-the-review).
 9. **Present findings, get approval, apply**: see [Applying findings](#applying-findings-both-modes).
 10. **Commit and push the adjustments** (same conventions, same push safety). If nothing needed
@@ -167,9 +174,10 @@ If the **`superpowers:requesting-code-review`** skill is installed, invoke it to
 reviewer subagent. Otherwise do it directly:
 
 - Dispatch one reviewer subagent with a self-contained brief: what the change is supposed to do
-  (one or two sentences), the exact range to review (`git diff <base>...HEAD`, plus `git diff` for
-  uncommitted work in Light mode), the project's conventions file if there is one, and the
-  instruction to verify every finding against the actual code before reporting it.
+  (one or two sentences), the exact range to review (Full: `git diff origin/<target>...HEAD`;
+  Light: `git diff $(git merge-base HEAD origin/<base>)` plus the untracked file list), the
+  project's conventions file if there is one, and the instruction to verify every finding against
+  the actual code before reporting it.
 - Ask for this output: **Strengths**, then **Issues** grouped as Critical / Important / Minor, each
   with `file:line`, the problem, and a suggested fix, then a one-line **Assessment** (ready to
   merge or not).
