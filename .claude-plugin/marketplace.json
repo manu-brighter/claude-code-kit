@@ -6,14 +6,14 @@
     "url": "https://github.com/manu-brighter"
   },
   "metadata": {
-    "description": "Skills and agents for Claude Code: autonomous codebase overhaul, docs/i18n sync, publishing prep, a set of creative-frontend specialist agents, and an adversarial security auditor for AI-generated codebases.",
-    "version": "1.1.2"
+    "description": "Skills and agents for Claude Code: autonomous codebase overhaul, shipping and code review workflows, docs/i18n sync, publishing prep, a set of creative-frontend specialist agents, and an adversarial security auditor for AI-generated codebases.",
+    "version": "1.2.0"
   },
   "plugins": [
     {
       "name": "dev-workflow",
-      "description": "Five general-purpose skills: full-project-rework (autonomous multi-agent codebase overhaul), project-refresh (docs, deployment info and i18n sync), generalize (strip personal context before publishing), list-skills (compact skill inventory), erklaerbaer (bilingual plain-language explainer).",
-      "version": "1.0.2",
+      "description": "Seven general-purpose skills: full-project-rework (autonomous multi-agent codebase overhaul), project-refresh (docs, deployment info and i18n sync), ship-changes (commit, push, MR/PR, subagent review, pipeline to green), review-ghostwriter (review someone's MR/PR and draft the comments in your voice, never posts), generalize (strip personal context before publishing), list-skills (compact skill inventory), erklaerbaer (bilingual plain-language explainer).",
+      "version": "1.1.0",
       "source": "./plugins/dev-workflow",
       "author": {
         "name": "manu-brighter",
@@ -25,7 +25,9 @@
         "documentation",
         "i18n",
         "publishing",
-        "multi-agent"
+        "multi-agent",
+        "code-review",
+        "git"
       ],
       "category": "development"
     },

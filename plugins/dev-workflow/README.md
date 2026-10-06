@@ -1,6 +1,6 @@
 # dev-workflow
 
-Five general-purpose Claude Code skills. Project-agnostic — they adapt to whatever
+Seven general-purpose Claude Code skills. Project-agnostic — they adapt to whatever
 codebase they are run in rather than imposing a stack.
 
 ```bash
@@ -37,6 +37,39 @@ Lightweight: no branch, no multi-phase pipeline. Distinct from `full-project-rew
 which is a code-quality overhaul that happens to include a docs step.
 
 **Explicit invocation only.**
+
+### [ship-changes](skills/ship-changes)
+
+The "get this work reviewed and out the door" workflow, with two modes chosen up front.
+**Full** commits, pushes, opens the MR/PR if none exists, runs a subagent review, applies
+the findings you approve, pushes again and drives the pipeline to green (with a cap of
+about three fix attempts before it hands back). **Light** only reviews the current
+changes and applies the approved fixes locally, without any git writes.
+
+Commit messages and branch names follow the project's own conventions (CLAUDE.md,
+CONTRIBUTING, commitlint, recent history) and only fall back to a documented default.
+Hard safety rules: never push to a protected branch, name the branch explicitly on the
+first push, no AI attribution anywhere. Auto-detects GitLab (`glab`) or GitHub (`gh`).
+Uses the superpowers review skills when installed and has its own fallback when not.
+
+### [review-ghostwriter](skills/review-ghostwriter)
+
+Reviews a colleague's MR/PR and writes copy-ready comments **in your own voice** into a
+temp Markdown file. It never posts anything; you decide what goes up. A reviewer subagent
+does the review, then the main agent verifies every finding against the code and debates
+disagreements with the reviewer (at most three rounds) until both agree, so false
+positives don't reach your colleagues.
+
+The file is deliberately minimal: findings grouped as Fatal / Major / Minor plus an
+optional "Aside" for code that is especially good or funny. Each finding has a short
+title, a jump link to the exact diff line (computed by a bundled script that matches
+GitLab's and GitHub's anchor formats) and the comment itself, with suggestion blocks
+whose line offsets fit how you will place them. Handles re-reviews, collapsed files and
+platform pitfalls such as quick actions or `$` turning into math.
+
+Ships with a sensible default voice. For the real effect, calibrate it once: the skill
+explains how to pull your own past review comments with `glab` or `gh` and derive your
+voice from them.
 
 ### [generalize](skills/generalize)
 
