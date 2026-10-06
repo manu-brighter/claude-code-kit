@@ -71,8 +71,16 @@ def parse_hunks(diff_text):
     return new_map, old_map
 
 
+def read_text(diff_file):
+    try:
+        with open(diff_file, encoding='utf-8', errors='replace') as handle:
+            return handle.read()
+    except OSError as error:
+        fail(f'Cannot read {diff_file}: {error}', 1)
+
+
 def load_diff_file(diff_file):
-    text = open(diff_file, encoding='utf-8', errors='replace').read()
+    text = read_text(diff_file)
     if text.lstrip()[:1] in ('[', '{'):
         return [(i.get('old_path'), i.get('new_path'), i.get('diff') or '') for i in load_gitlab_items(text)]
     return load_unified_files(text)
@@ -86,14 +94,21 @@ def load_gitlab_items(text):
             idx += 1
         if idx >= len(text):
             break
-        obj, idx = decoder.raw_decode(text, idx)
+        try:
+            obj, idx = decoder.raw_decode(text, idx)
+        except json.JSONDecodeError as error:
+            fail(f'Invalid JSON at position {error.pos}: {error.msg}', 1)
         if isinstance(obj, dict):
-            if 'diffs' in obj or 'changes' in obj:
-                obj = obj.get('diffs') or obj.get('changes')
+            if 'diffs' in obj:
+                obj = obj['diffs'] or []
+            elif 'changes' in obj:
+                obj = obj['changes'] or []
             elif 'diff' not in obj:
                 fail(f'API error instead of a diff: {json.dumps(obj)[:300]}', 1)
             else:
                 obj = [obj]
+        if not isinstance(obj, list) or not all(isinstance(item, dict) for item in obj):
+            fail('Unexpected JSON: expected a list of diff objects', 1)
         items.extend(obj)
     return items
 
@@ -116,7 +131,7 @@ def paths_from_git_header(rest):
         m = re.match(r'^(".*?"|\S+) (".*")$', rest)
         if m:
             return strip_prefix(unquote(m.group(1)), 'a/'), strip_prefix(unquote(m.group(2)), 'b/')
-    half = (len(rest) - 3) // 2
+    half = (len(rest) - 1) // 2
     if rest[half:half + 3] == ' b/':
         return strip_prefix(rest[:half], 'a/'), rest[half + 3:]
     old, _, new = rest.rpartition(' b/')
@@ -136,6 +151,12 @@ def load_unified_files(text):
         if cur is None:
             continue
         if not seen_hunk:
+            if line.startswith('rename from '):
+                cur['old'] = unquote(line[len('rename from '):])
+                continue
+            if line.startswith('rename to '):
+                cur['new'] = unquote(line[len('rename to '):])
+                continue
             if line.startswith('--- '):
                 target = unquote(line[4:])
                 cur['old'] = None if target == '/dev/null' else strip_prefix(target, 'a/')
@@ -160,12 +181,15 @@ def parse_spec(spec):
     lines = lines[1:] if old_side else lines
     first, _, last = lines.partition('-')
     first = int(first)
+    last = int(last) if last else first
+    if last < first:
+        raise ValueError(spec)
     path = strip_prefix(path.replace('\\', '/'), './')
-    return path, old_side, first, int(last) if last else first
+    return path, old_side, first, last
 
 
 def dump(diff_file):
-    items = load_gitlab_items(open(diff_file, encoding='utf-8', errors='replace').read())
+    items = load_gitlab_items(read_text(diff_file))
     for item in items:
         print(f"diff --git a/{item.get('old_path')} b/{item.get('new_path')}")
         flags = [k for k in FLAGS if item.get(k)]
